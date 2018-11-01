@@ -35,7 +35,7 @@ def recNodeBreak(theString, nodeSize, numberInNode, whichNode, listOfLists, i):
 
         combinedList = leftList + middleList + rightList
         #print(combinedList)
-        recNodeBreak(theString, nodeSize, numberInNode + 1, whichNode, combinedList, i - 1)
+        return(recNodeBreak(theString, nodeSize, numberInNode + 1, whichNode, combinedList, i - 1))
     elif (i > -1 and numberInNode == nodeSize):
         #whichNode -= 1
         #numberInNode = 0
@@ -46,7 +46,7 @@ def recNodeBreak(theString, nodeSize, numberInNode, whichNode, listOfLists, i):
 
         combinedList = leftList + middleList + rightList
         #print(combinedList)
-        recNodeBreak(theString, nodeSize, 1 ,whichNode -1, combinedList, i - 1)
+        return(recNodeBreak(theString, nodeSize, 1 ,whichNode -1, combinedList, i - 1))
 
 myString = "123456789"
 nodeSize = 3
@@ -63,8 +63,8 @@ i = len(myString) - 1
 
 
 # this is the recursion driver method, uncommet the prints in the method to show the process
-listCombiner = recNodeBreak(myString, nodeSize, numberInNode, whichNode, listOfLists, i)
-#print(listCombiner)
+c =recNodeBreak(myString, nodeSize, numberInNode, whichNode, listOfLists, i)
+print(c)
 
 
 # #print(listOfLists)
