@@ -395,6 +395,21 @@ def destroyLeadingZero(listA):
         #del listA[0]
         rightList = listA[1:]
         return destroyLeadingZero(rightList)
+    
+ 
+def recToString(listC, listLen, i):
+    if (i == listLen - 1):
+        # print(i)
+        theReturnedString = listC[i]
+        print(theReturnedString)
+        return str(theReturnedString)
+    elif (i < listLen):
+        # print(i)
+        theReturnedString = listC[i]
+        print(theReturnedString)
+        return str(theReturnedString) + recToString(listC, listLen, i + 1)
+
+
         
         
 
