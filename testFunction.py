@@ -111,6 +111,69 @@ def zeroPad(whichNode, nodeSize, listA, listB):
 
         #whichNode += 1
         return(zeroPad(whichNode+1, nodeSize, listA, listB))
+    
+    
+####################################################################################
+#  Summary: This time no slice is needed, we just make a copy of the listC which is
+#           the list that is holding the current sum of the numbers so far. Then
+#           concatenate that with the value of the next numbers that are added, and
+#           pass this into the function instead of insertions
+#
+#
+#
+####################################################################################
+def recAdd(listA, listB, listC, whichNode, numberInNode, nodeSize, carryOver):
+    if (whichNode == -1):
+        # print("if")
+        #listC.insert(0, carryOver)
+        #print(listC)
+        leftList = [carryOver]
+        rightList = listC
+
+
+        combinedList = leftList + rightList
+        #return listC
+        return combinedList
+    elif (whichNode > -1 and numberInNode > -1):
+
+        # print("elif1")
+        # print(whichNode, numberInNode)
+
+        toInsert = (listA[whichNode][numberInNode] + listB[whichNode][numberInNode] + carryOver) % 10
+        # print(toInsert)
+        # print(carryOver)
+        carryOver = (listA[whichNode][numberInNode] + listB[whichNode][numberInNode] + carryOver) // 10
+        # print(carryOver)
+        #numberInNode -= 1
+        #listC.insert(0, toInsert)
+
+        leftList = toInsert
+        rightList = listC
+
+        combinedList = [leftList] + rightList
+
+        #print(combinedList)
+        return recAdd(listA, listB, combinedList, whichNode, numberInNode-1, nodeSize, carryOver)
+    elif (whichNode >= -1 and numberInNode == -1):
+        # print("elif2")
+        whichNode -= 1
+        numberInNode = len(listA[0]) - 1
+        # print(whichNode, numberInNode)
+        if (whichNode == -1):
+            return recAdd(listA, listB, listC, whichNode, numberInNode, nodeSize, carryOver)
+        else:
+            # print(whichNode, numberInNode)
+            toInsert = (listA[whichNode][numberInNode] + listB[whichNode][numberInNode] + carryOver) % 10
+            carryOver = (listA[whichNode][numberInNode] + listB[whichNode][numberInNode] + carryOver) // 10
+            #listC.insert(0, toInsert)
+            leftList = toInsert
+            rightList = listC
+
+            combinedList = [leftList] + rightList
+            #print(listC)
+            #numberInNode -= 1
+            return recAdd(listA, listB, combinedList, whichNode, numberInNode-1, nodeSize, carryOver)
+
 
 
 myString = "123456789"
