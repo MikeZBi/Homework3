@@ -237,11 +237,24 @@ def toMultiply(listA, listB, listC, whichNodeA, whichNodeB, indexA, indexB, inde
         # print("value of listC: ", listC)
         # print("value of indexC", indexC)
         # print("value of listC at indexC", listC[indexC])
-        listC[indexC] = (toAdd + toInsert + carryOverAdd) % 10
+        #listC[indexC] = (toAdd + toInsert + carryOverAdd) % 10
+        leftList = listC[:indexC]
+        middleList = [(toAdd + toInsert + carryOverAdd) % 10]
+        rightList = listC[indexC + 1:]
 
-        carryOverAdd = (toAdd + toInsert + carryOverAdd) // 10
+        combinedList = leftList + middleList + rightList
+
+        #carryOverAdd = (toAdd + toInsert + carryOverAdd) // 10
+        carryOverLeft = combinedList[:indexC - 1]
+        carryOverMiddle = [((toAdd + toInsert + carryOverAdd) // 10)+carryOver]
+        carryOverRight = combinedList[indexC:]
+
+        finalCombinedList = carryOverLeft + carryOverMiddle + carryOverRight
+
         # print("value of carryOverAdd", carryOverAdd)
-        listC[indexC - 1] = carryOverAdd + carryOver
+        #listC[indexC - 1] = carryOverAdd + carryOver
+
+        return finalCombinedList
 
 
 
@@ -258,15 +271,22 @@ def toMultiply(listA, listB, listC, whichNodeA, whichNodeB, indexA, indexB, inde
         carryOver = (listA[whichNodeA][indexA] * listB[whichNodeB][indexB] + carryOver) // 10
         # print("new carry over: ", carryOver)
         # print("number toInsert: ", toInsert)
-        # listC.insert(0, toInsert)
+        #listC.insert(0, toInsert)
         toAdd = listC[indexC]
-        listC[indexC] = (toAdd + toInsert + carryOverAdd) % 10
+
+        #listC[indexC] = (toAdd + toInsert + carryOverAdd) % 10
+        leftList = listC[:indexC]
+        middleList = [(toAdd + toInsert + carryOverAdd) % 10]
+        rightList = listC[indexC+1:]
+
+        combinedList = leftList + middleList + rightList
+
         # print("number in listC: ", listC[indexC])
         carryOverAdd = (toAdd + toInsert + carryOverAdd) // 10
         # print("carryOverAdd: ", carryOverAdd)
         # print("numbers in listC: ", listC)
-
-        toMultiply(listA, listB, listC, whichNodeA, whichNodeB, indexA - 1, indexB, indexC - 1, carryOver, carryOverAdd,
+        #print(listC)
+        return toMultiply(listA, listB, combinedList, whichNodeA, whichNodeB, indexA - 1, indexB, indexC - 1, carryOver, carryOverAdd,
                    n)
 
 
@@ -285,13 +305,21 @@ def toMultiply(listA, listB, listC, whichNodeA, whichNodeB, indexA, indexB, inde
         # print("value of index C", indexC)
 
         toAdd = listC[indexC]
-        listC[indexC] = (toAdd + toInsert + carryOverAdd) % 10
+        #listC[indexC] = (toAdd + toInsert + carryOverAdd) % 10
+        leftList = listC[:indexC]
+        middleList = [(toAdd + toInsert + carryOverAdd) % 10]
+        rightList = listC[indexC + 1:]
+
+        combinedList = leftList + middleList + rightList
+
+
+
         # print("number in listC: ", listC[indexC])
         carryOverAdd = (toAdd + toInsert + carryOverAdd) // 10
         # print("carryOverAdd: ", carryOverAdd)
 
-        whichNodeA -= 1
-        indexA = len(listA[whichNodeA]) - 1
+        #whichNodeA -= 1
+        #indexA = len(listA[whichNodeA]) - 1
         # if(whichNodeA == -1 and indexA == 1 and carryOver != 0):
         #     print("elif2 if")
         #     listC.insert(indexC, carryOver)
@@ -300,8 +328,8 @@ def toMultiply(listA, listB, listC, whichNodeA, whichNodeB, indexA, indexB, inde
         # print("numbers in listC", listC)
         # print("which NodeA:", whichNodeA, "which indexA: ", indexA, " number mult: ", listA[whichNodeA][indexA])
         # print("which NodeB:", whichNodeB, "which indexB: ", indexB, " n mult: ", listB[whichNodeB][indexB])
-
-        toMultiply(listA, listB, listC, whichNodeA, whichNodeB, indexA, indexB, indexC - 1, carryOver, carryOverAdd, n)
+        #print(listC)
+        return toMultiply(listA, listB, combinedList, whichNodeA-1, whichNodeB, len(listA[whichNodeA]) - 1, indexB, indexC - 1, carryOver, carryOverAdd, n)
 
 
     # loop through index in listB; this happens when we are on the last index of the last node in listA
@@ -318,30 +346,42 @@ def toMultiply(listA, listB, listC, whichNodeA, whichNodeB, indexA, indexB, inde
         # we can just add them together and even if both are 0, it will be bad since its at the very end, and
         # will be the largest current number, as indexC will constantly be pushed to the left each elif3
         toAdd = listC[indexC]
-        listC[indexC] = (toAdd + toInsert + carryOverAdd) % 10
+        #listC[indexC] = (toAdd + toInsert + carryOverAdd) % 10
+        leftList = listC[:indexC]
+        middleList = [(toAdd + toInsert + carryOverAdd) % 10]
+        rightList = listC[indexC + 1:]
+
+        combinedList = leftList + middleList + rightList
+
+
         carryOverAdd = (toAdd + toInsert + carryOverAdd) // 10
 
-        listC[indexC - 1] = carryOverAdd + carryOver
+        #listC[indexC - 1] = carryOverAdd + carryOver
+        carryOverLeft = combinedList[:indexC-1]
+        carryOverMiddle = [carryOverAdd + carryOver]
+        carryOverRight = combinedList[indexC:]
+
+        finalCombinedList = carryOverLeft+ carryOverMiddle + carryOverRight
         # Need to reset the carryOver and carryOverAdd back to 0
-        carryOver = 0
-        carryOverAdd = 0
+        #carryOver = 0
+        #carryOverAdd = 0
         # reset node back to the furthest left element
-        whichNodeA = len(listA) - 1
+        #whichNodeA = len(listA) - 1
         # reset the indexA to the size of the next node value
-        indexA = len(listA[whichNodeA]) - 1
+        #indexA = len(listA[whichNodeA]) - 1
         # move the index of B left one
-        indexB = indexB - 1
+        #indexB = indexB - 1
         # to move where we are adding by left 1 index each time we traverse an index of B
-        indexC = len(listC) - (n + 1)
+        #indexC = len(listC) - (n + 1)
         # change the value of n so that we subtract a larger n
-        n += 1
+        #n += 1
         # print("A entire multiplication has finished, reseting whichNodeA back to right most node:", whichNodeA)
 
         # print("indexA:", indexA)
         # print("whichNodeA", whichNodeA)
         # print(listC)
-
-        toMultiply(listA, listB, listC, whichNodeA, whichNodeB, indexA, indexB, indexC, carryOver, carryOverAdd, n)
+        #print(listC)
+        return toMultiply(listA, listB, finalCombinedList, len(listA) - 1, whichNodeB, len(listA[whichNodeA]) - 1, indexB-1, len(listC) - (n + 1), 0, 0, n+1)
 
 
     # finally need to be able to change the node in B
@@ -353,29 +393,50 @@ def toMultiply(listA, listB, listC, whichNodeA, whichNodeB, indexA, indexB, inde
         carryOver = (listA[whichNodeA][indexA] * listB[whichNodeB][indexB] + carryOver) // 10
 
         toAdd = listC[indexC]
-        listC[indexC] = (toInsert + toAdd + carryOverAdd) % 10
+        #listC[indexC] = (toInsert + toAdd + carryOverAdd) % 10
+        leftList = listC[:indexC]
+        middleList = [(toAdd + toInsert + carryOverAdd) % 10]
+        rightList = listC[indexC + 1:]
+
+        combinedList = leftList + middleList + rightList
+
         carryOverAdd = (toInsert + toAdd + carryOverAdd) // 10
         # since this is still the end of a listA multiplication, we need to make sure the carryOver and carryOverAdd are just inserted to the front most of the current index
 
-        listC[indexC - 1] = carryOverAdd + carryOver
-        carryOverAdd = 0
-        carryOver = 0
+
+
+
+        #listC[indexC - 1] = carryOverAdd + carryOver
+
+        carryOverLeft = combinedList[:indexC - 1]
+        carryOverMiddle = [((toAdd + toInsert + carryOverAdd) // 10) + carryOver]
+        carryOverRight = combinedList[indexC:]
+
+        finalCombinedList = carryOverLeft + carryOverMiddle + carryOverRight
+
+
+
+
+
+
+        #carryOverAdd = 0
+        #carryOver = 0
 
         # finished a lsitA multiply, so reset back to last node and right most element in that node
-        whichNodeA = len(listA) - 1
-        indexA = len(listA[whichNodeA]) - 1
+        #whichNodeA = len(listA) - 1
+        #indexA = len(listA[whichNodeA]) - 1
 
         # change the node for B
-        whichNodeB -= 1
+        #whichNodeB -= 1
         # change the index to the right most index of that list
-        indexB = len(listB[whichNodeB]) - 1
+        #indexB = len(listB[whichNodeB]) - 1
 
         # need to reset where the indexC, as we have finished a multiply and need to start a new line, the index must start one left since we have to add a 0 in signifigance
-        indexC = len(listC) - (n + 1)
-        n += 1
+        #indexC = len(listC) - (n + 1)
+        #n += 1
         # print("here is listC: ", listC)
-
-        toMultiply(listA, listB, listC, whichNodeA, whichNodeB, indexA, indexB, indexC, carryOver, carryOverAdd, n)
+        #print(listC)
+        return toMultiply(listA, listB, finalCombinedList, len(listA) - 1, whichNodeB-1, len(listA[whichNodeA]) - 1, len(listB[whichNodeB]) - 1, len(listC) - (n + 1), 0, 0, n+1)
 
 def getCommaIndex(expression, index):
     if (expression[index] == ','):
@@ -429,7 +490,24 @@ def analizeSingleExpression (expression, nodeSize):
         return (recToString(rawResult,len(rawResult),0))
 
     elif (expression[0] == 'm'):
-        print ("Multiplication")
+        #print ("Multiplication")
+        listC = [0] * ((len(firstNumberPadded) * nodeSize) + (len(secondNumberPadded) * nodeSize) + 1)
+        whichNodeA = len(firstNumberPadded) - 1
+        whichNodeB = len(secondNumberPadded) - 1
+        indexA = len(firstNumberPadded[0]) - 1
+        indexB = len(secondNumberPadded[0]) - 1
+        indexC = len(listC) - 1
+        n = 1
+        carryOver = 0;
+        carryOverAdd = 0;
+        rawResult = toMultiply(firstNumberPadded, secondNumberPadded, listC, whichNodeA, whichNodeB, indexA,
+                               indexB, indexC, carryOver,
+                               carryOverAdd, n)
+
+        #print (rawResult)
+        destroyLeadingZero(rawResult)
+        # print (rawResult)
+        return (recToString(rawResult, len(rawResult), 0))
 
 def findFirstClosingParethesis(line, index):
     if (line[index] == ')'):
@@ -475,7 +553,7 @@ def analizeAndPrint(linesList, index, nodeSize):
 #######################################################
 
 nodeSize=2
-f=open("/Users/guillermo/PycharmProjects/HW3/test.txt","r")
-lines = f.readlines()
-analizeAndPrint(lines,0,nodeSize)
+#f=open("C:\\Users\\acer\\PycharmProjects\\functionalProgramming\\file","r")
+#lines = f.readlines()
+analizeAndPrint(f.readlines(),0,nodeSize)
 f.close()
