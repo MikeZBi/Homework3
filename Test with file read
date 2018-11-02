@@ -1,0 +1,481 @@
+import math
+import sys
+
+
+# finds the total elements in a 2dlist
+def lengthFinder(listA):
+    length = 0
+    for i in range(len(listA)):
+        for j in range(len(listA[i])):
+            length += 1
+    return length
+
+####################################################################################
+# Function: To generate a 2d list from a string that represents a large number.
+#           The number is broken into nodes of size nodeSize, where each index of the
+#           list will represent a slice of the total string. Start from the left hand side
+#           of the string and insert from the left hand side of the 2dlist. Uncomment print
+#           to see how this works
+#
+# theString; The string the represents the very large number, passed in from file
+# nodeSize; The size of the nodes given by the command line arguemnt
+# numberInNode; keeps track of which index in the nodes we are in, initialize to 0.
+#               used as a way to know when a node is full, and move on to the next node
+# whichNode; keeps track of which node we are inserting number in
+# listOfLists; a 2dlist where n = ceil( len(theString) / nodeSize), then there are n empty
+#               lists within listOfLists
+# i; used to traverse the string and keep track of which element we are appending to the node
+#
+
+####################################################################################
+def recNodeBreak(theString, nodeSize, numberInNode, whichNode, listOfLists, i):
+
+    if (len(theString) == 1):
+        #listOfLists[whichNode].insert(0, (int(theString[i])))
+        leftList = listOfLists[:whichNode]
+        middleList = [[int(theString[i])] + listOfLists[whichNode]]
+        rightList = listOfLists[whichNode+1:]
+
+        combinedList = leftList + middleList + rightList
+        #print(combinedList)
+        return combinedList
+    elif (i == -1):
+        #print(listOfLists)
+        #print(type(listOfLists))
+        return listOfLists
+    elif (i > -1 and numberInNode < nodeSize):
+        #listOfLists[whichNode].insert(0, (int(theString[i])))
+        leftList = listOfLists[:whichNode]
+        middleList = [[int(theString[i])] + listOfLists[whichNode]]
+        rightList = listOfLists[whichNode+1:]
+
+        combinedList = leftList + middleList + rightList
+        #print(combinedList)
+        return(recNodeBreak(theString, nodeSize, numberInNode + 1, whichNode, combinedList, i - 1))
+    elif (i > -1 and numberInNode == nodeSize):
+        #whichNode -= 1
+        #numberInNode = 0
+        #listOfLists[whichNode-1].insert(0, (int(theString[i])))
+        leftList = listOfLists[:whichNode-1]
+        middleList = [[int(theString[i])] + listOfLists[whichNode-1]]
+        rightList = listOfLists[whichNode:]
+
+        combinedList = leftList + middleList + rightList
+        #print(combinedList)
+        return(recNodeBreak(theString, nodeSize, 1 ,whichNode -1, combinedList, i - 1))
+
+
+
+####################################################################################
+# Function: To ensure that both lists are of equal size, and that all nodes are filled.
+#           This is done by either inserting empty list's and padding them with zero's,
+#           padding nodes that are not of size nodeSize with zero's or both.
+#
+#
+# whichNode; keeps track of which node we are inserting number in
+#
+#
+
+####################################################################################
+
+
+def zeroPad(whichNode, nodeSize, listA, listB):
+    if (len(listA) == len(listB) and whichNode == len(listA)):
+        # print("if")
+        return listA
+
+    elif (len(listA) != len(listB)):
+        # print("elif1")
+        if (len(listA) < len(listB)):
+            #listA.insert(0, [])
+            leftList = [[]]
+            rightList = listA
+            combined = leftList + rightList
+            return(zeroPad(whichNode, nodeSize, combined, listB))
+        else:
+            #listB.insert(0, [])
+            leftList = [[]]
+            rightList = listB
+            combined = leftList + rightList
+            return(zeroPad(whichNode, nodeSize, listA, combined))
+
+    elif (len(listA[whichNode]) < nodeSize or len(listB[whichNode]) < nodeSize):
+        # print("elif2", whichNode)
+        # print(listA)
+        # print(listB)
+
+        if (len(listA[whichNode]) < nodeSize):
+            # print("elif2 if")
+
+            #listA[whichNode].insert(0, 0)
+            leftList = listA[:whichNode]
+            middleList = [[0] + listA[whichNode]]
+            rightList = listA[whichNode + 1:]
+
+            combinedList = leftList + middleList + rightList
+
+            # print(listA)
+            return(zeroPad(whichNode, nodeSize, combinedList, listB))
+        else:
+            # print("elif2 else")
+
+            #listB[whichNode].insert(0, 0)
+            leftList = listB[:whichNode]
+            middleList = [[0] + listB[whichNode]]
+            rightList = listB[whichNode + 1:]
+
+            combinedList = leftList + middleList + rightList
+
+            # print(listB)
+            return(zeroPad(whichNode, nodeSize, listA, combinedList))
+
+    elif (len(listA[whichNode]) == nodeSize and len(listB[whichNode]) == nodeSize):
+        # print("elif3")
+
+        #whichNode += 1
+        return(zeroPad(whichNode+1, nodeSize, listA, listB))
+
+
+def destroyLeadingZero(listA):
+    if (listA[0] != 0) or (len(listA) == 1):
+        return
+    else:
+        del listA[0]
+        destroyLeadingZero(listA)
+
+
+def recToString(listC, listLen, i):
+    if (i == listLen - 1):
+        # print(i)
+        theReturnedString = listC[i]
+        # print(theReturnedString)
+        return str(theReturnedString)
+    elif (i < listLen):
+        # print(i)
+        theReturnedString = listC[i]
+        # print(theReturnedString)
+        return str(theReturnedString) + recToString(listC, listLen, i + 1)
+
+
+# assume listA is the longer list
+# assume listB is the shorter list
+# for now lets jsut consider that list A and B are of same length, and we padded them with 0's
+# whichNodeA is set to len(listA)-1
+# whichNodeB is set to len(listB)-1
+# indexA, indexB; initially set to nodeSize
+
+# listC must be of size listA + n * len(listB)-1, intialize to all 0's
+# need some indexC to keep track of which index in listC, initialize i to the last element in listC as first
+# then when we finish up an index in B, change i to be the len(listC)-2 and then -3 (in the recursion this will just be indexC-1
+
+# also need a carryOver for adding, called carryOverAdd, initially set to 0
+
+
+def recAdd(listA, listB, listC, whichNode, numberInNode, nodeSize, carryOver):
+    if (whichNode == -1):
+        # print("if")
+        #listC.insert(0, carryOver)
+        #print(listC)
+        leftList = [carryOver]
+        rightList = listC
+
+
+        combinedList = leftList + rightList
+        #return listC
+        return combinedList
+    elif (whichNode > -1 and numberInNode > -1):
+
+        # print("elif1")
+        # print(whichNode, numberInNode)
+
+        toInsert = (listA[whichNode][numberInNode] + listB[whichNode][numberInNode] + carryOver) % 10
+        # print(toInsert)
+        # print(carryOver)
+        carryOver = (listA[whichNode][numberInNode] + listB[whichNode][numberInNode] + carryOver) // 10
+        # print(carryOver)
+        #numberInNode -= 1
+        #listC.insert(0, toInsert)
+
+        leftList = toInsert
+        rightList = listC
+
+        combinedList = [leftList] + rightList
+
+        #print(combinedList)
+        return recAdd(listA, listB, combinedList, whichNode, numberInNode-1, nodeSize, carryOver)
+    elif (whichNode >= -1 and numberInNode == -1):
+        # print("elif2")
+        whichNode -= 1
+        numberInNode = len(listA[0]) - 1
+        # print(whichNode, numberInNode)
+        if (whichNode == -1):
+            return recAdd(listA, listB, listC, whichNode, numberInNode, nodeSize, carryOver)
+        else:
+            # print(whichNode, numberInNode)
+            toInsert = (listA[whichNode][numberInNode] + listB[whichNode][numberInNode] + carryOver) % 10
+            carryOver = (listA[whichNode][numberInNode] + listB[whichNode][numberInNode] + carryOver) // 10
+            #listC.insert(0, toInsert)
+            leftList = toInsert
+            rightList = listC
+
+            combinedList = [leftList] + rightList
+            #print(listC)
+            #numberInNode -= 1
+            return recAdd(listA, listB, combinedList, whichNode, numberInNode-1, nodeSize, carryOver)
+
+# for now i have a list of 0's so we need to make sure the first if statement is interting into the correct place
+def toMultiply(listA, listB, listC, whichNodeA, whichNodeB, indexA, indexB, indexC, carryOver, carryOverAdd, n):
+    if (whichNodeA == 0 and whichNodeB == 0 and indexA == 0 and indexB == 0):
+        # print("if")
+        toInsert = (listA[whichNodeA][indexA] * listB[whichNodeB][indexB] + carryOver) % 10
+        carryOver = (listA[whichNodeA][indexA] * listB[whichNodeB][indexB] + carryOver) // 10
+        # listC.insert(0, toInsert)
+        # print("this is the value to insert", toInsert)
+        # print("value of carryOver", carryOver)
+        # print("value of carryOverAdd", carryOverAdd)
+        toAdd = listC[indexC]
+        # print("value of listC: ", listC)
+        # print("value of indexC", indexC)
+        # print("value of listC at indexC", listC[indexC])
+        listC[indexC] = (toAdd + toInsert + carryOverAdd) % 10
+
+        carryOverAdd = (toAdd + toInsert + carryOverAdd) // 10
+        # print("value of carryOverAdd", carryOverAdd)
+        listC[indexC - 1] = carryOverAdd + carryOver
+
+
+
+
+
+    # for some list B with one node and one item, and be able to multiply through listA that has one node and many items
+    elif (whichNodeB >= 0 and indexB >= 0 and whichNodeA > -1 and indexA > 0 and indexC >= 0):
+        # print("elif1: traversing the current node")
+        # print("here is indexC", indexC, " and value at indexC", listC[indexC])
+        # print("which NodeA:", whichNodeA, "which indexA: ", indexA, " number mult: ", listA[whichNodeA][indexA])
+        # print("which NodeB:", whichNodeB, "which indexB: ", indexB, " n mult: ", listB[whichNodeB][indexB])
+        # print("current carry over: ", carryOver)
+        toInsert = (listA[whichNodeA][indexA] * listB[whichNodeB][indexB] + carryOver) % 10
+        carryOver = (listA[whichNodeA][indexA] * listB[whichNodeB][indexB] + carryOver) // 10
+        # print("new carry over: ", carryOver)
+        # print("number toInsert: ", toInsert)
+        # listC.insert(0, toInsert)
+        toAdd = listC[indexC]
+        listC[indexC] = (toAdd + toInsert + carryOverAdd) % 10
+        # print("number in listC: ", listC[indexC])
+        carryOverAdd = (toAdd + toInsert + carryOverAdd) // 10
+        # print("carryOverAdd: ", carryOverAdd)
+        # print("numbers in listC: ", listC)
+
+        toMultiply(listA, listB, listC, whichNodeA, whichNodeB, indexA - 1, indexB, indexC - 1, carryOver, carryOverAdd,
+                   n)
+
+
+    # this is to loop through nodes in listA
+    elif (whichNodeB >= 0 and indexB >= 0 and whichNodeA > 0 and indexA == 0):
+        # print("elif2: the max of a node has been reached, we multiplying the last index of current node")
+        # print("then after this, we should have changed to the next node of listA")
+        # print("which NodeA:", whichNodeA, "which indexA: ", indexA, " number mult: ", listA[whichNodeA][indexA])
+        # print("which NodeB:", whichNodeB, "which indexB: ", indexB, " n mult: ", listB[whichNodeB][indexB])
+
+        # print("current carry over: ", carryOver)
+        toInsert = (listA[whichNodeA][indexA] * listB[whichNodeB][indexB] + carryOver) % 10
+        carryOver = (listA[whichNodeA][indexA] * listB[whichNodeB][indexB] + carryOver) // 10
+        # print("new carry over: ", carryOver)
+        # print("number toInsert: ", toInsert)
+        # print("value of index C", indexC)
+
+        toAdd = listC[indexC]
+        listC[indexC] = (toAdd + toInsert + carryOverAdd) % 10
+        # print("number in listC: ", listC[indexC])
+        carryOverAdd = (toAdd + toInsert + carryOverAdd) // 10
+        # print("carryOverAdd: ", carryOverAdd)
+
+        whichNodeA -= 1
+        indexA = len(listA[whichNodeA]) - 1
+        # if(whichNodeA == -1 and indexA == 1 and carryOver != 0):
+        #     print("elif2 if")
+        #     listC.insert(indexC, carryOver)
+        #     carryOver = 0
+
+        # print("numbers in listC", listC)
+        # print("which NodeA:", whichNodeA, "which indexA: ", indexA, " number mult: ", listA[whichNodeA][indexA])
+        # print("which NodeB:", whichNodeB, "which indexB: ", indexB, " n mult: ", listB[whichNodeB][indexB])
+
+        toMultiply(listA, listB, listC, whichNodeA, whichNodeB, indexA, indexB, indexC - 1, carryOver, carryOverAdd, n)
+
+
+    # loop through index in listB; this happens when we are on the last index of the last node in listA
+    elif (whichNodeB >= 0 and indexB > 0 and whichNodeA == 0 and indexA == 0):
+        # print("elif3: this will process the 0th index of the 0th node in listA")
+        # print("it will also change nodeA back to the left most once it has finished")
+        # print("which NodeA:", whichNodeA, "which indexA: ", indexA)
+        # print("which NodeB:", whichNodeB, "which indexB: ", indexA)
+
+        toInsert = (listA[whichNodeA][indexA] * listB[whichNodeB][indexB] + carryOver) % 10
+        carryOver = (listA[whichNodeA][indexA] * listB[whichNodeB][indexB] + carryOver) // 10
+
+        # this is attempting that, since the carryOver will be max of 8 (ie. 9*9 = 81) and max of carryOverAdd = 1
+        # we can just add them together and even if both are 0, it will be bad since its at the very end, and
+        # will be the largest current number, as indexC will constantly be pushed to the left each elif3
+        toAdd = listC[indexC]
+        listC[indexC] = (toAdd + toInsert + carryOverAdd) % 10
+        carryOverAdd = (toAdd + toInsert + carryOverAdd) // 10
+
+        listC[indexC - 1] = carryOverAdd + carryOver
+        # Need to reset the carryOver and carryOverAdd back to 0
+        carryOver = 0
+        carryOverAdd = 0
+        # reset node back to the furthest left element
+        whichNodeA = len(listA) - 1
+        # reset the indexA to the size of the next node value
+        indexA = len(listA[whichNodeA]) - 1
+        # move the index of B left one
+        indexB = indexB - 1
+        # to move where we are adding by left 1 index each time we traverse an index of B
+        indexC = len(listC) - (n + 1)
+        # change the value of n so that we subtract a larger n
+        n += 1
+        # print("A entire multiplication has finished, reseting whichNodeA back to right most node:", whichNodeA)
+
+        # print("indexA:", indexA)
+        # print("whichNodeA", whichNodeA)
+        # print(listC)
+
+        toMultiply(listA, listB, listC, whichNodeA, whichNodeB, indexA, indexB, indexC, carryOver, carryOverAdd, n)
+
+
+    # finally need to be able to change the node in B
+    elif (whichNodeB > 0 and indexB == 0 and whichNodeA == 0 and indexA == 0):
+        # print("elif4: the last item in listA has been reached, and it is the last item in current nodeB")
+        # print(
+        #    "we process the current item, and will reset back to furthest A, and onto the next node when this is done")
+        toInsert = (listA[whichNodeA][indexA] * listB[whichNodeB][indexB] + carryOver) % 10
+        carryOver = (listA[whichNodeA][indexA] * listB[whichNodeB][indexB] + carryOver) // 10
+
+        toAdd = listC[indexC]
+        listC[indexC] = (toInsert + toAdd + carryOverAdd) % 10
+        carryOverAdd = (toInsert + toAdd + carryOverAdd) // 10
+        # since this is still the end of a listA multiplication, we need to make sure the carryOver and carryOverAdd are just inserted to the front most of the current index
+
+        listC[indexC - 1] = carryOverAdd + carryOver
+        carryOverAdd = 0
+        carryOver = 0
+
+        # finished a lsitA multiply, so reset back to last node and right most element in that node
+        whichNodeA = len(listA) - 1
+        indexA = len(listA[whichNodeA]) - 1
+
+        # change the node for B
+        whichNodeB -= 1
+        # change the index to the right most index of that list
+        indexB = len(listB[whichNodeB]) - 1
+
+        # need to reset where the indexC, as we have finished a multiply and need to start a new line, the index must start one left since we have to add a 0 in signifigance
+        indexC = len(listC) - (n + 1)
+        n += 1
+        # print("here is listC: ", listC)
+
+        toMultiply(listA, listB, listC, whichNodeA, whichNodeB, indexA, indexB, indexC, carryOver, carryOverAdd, n)
+
+def getCommaIndex(expression, index):
+    if (expression[index] == ','):
+        return index
+    else:
+        return (getCommaIndex(expression, index+1))
+
+def getopenParenthesisIndex(expression, index):
+    if (expression[index] == '('):
+        return index
+    else:
+        return (getopenParenthesisIndex(expression, index+1))
+
+def analizeSingleExpression (expression, nodeSize):
+    firstNumber = expression[getopenParenthesisIndex(expression,0)+1:getCommaIndex(expression,0)]
+    secondNumber = expression[getCommaIndex(expression,0)+1:len(expression)-1]
+    #print(firstNumber)
+    #print(secondNumber)
+
+    numberOfNodes = (math.ceil(len(firstNumber) / nodeSize))
+    numberOfNodes2 = (math.ceil(len(secondNumber) / nodeSize))
+    listOfLists = [0] * (numberOfNodes)
+    for i in range(numberOfNodes):
+        listOfLists[i] = []
+
+    firstNumberNoded = recNodeBreak(firstNumber, nodeSize, 0, (math.ceil(len(firstNumber) / nodeSize)) - 1, listOfLists, len(firstNumber)-1)
+
+    listOfLists2 = [0] * (numberOfNodes2)
+    for i in range(numberOfNodes2):
+        listOfLists2[i] = []
+
+    secondNumberNoded = recNodeBreak(secondNumber, nodeSize, 0, (math.ceil(len(secondNumber) / nodeSize)) - 1, listOfLists2, len(secondNumber)-1)
+    #print (firstNumberNoded)
+    #print (secondNumberNoded)
+
+    firstNumberPadded = zeroPad(0, nodeSize,firstNumberNoded,secondNumberNoded)
+    secondNumberPadded = zeroPad(0, nodeSize, secondNumberNoded, firstNumberNoded)
+    #print (firstNumberPadded)
+    #print(secondNumberPadded)
+
+    if (expression[0] == 'a'):
+        #print ("Addition")
+        listC = []
+        whichNoderecAdd = max(len(firstNumberPadded), len(secondNumberPadded)) - 1
+        numberInNoderecAdd = len(firstNumberPadded[0]) - 1
+        rawResult = recAdd(firstNumberPadded, secondNumberPadded, listC, whichNoderecAdd, numberInNoderecAdd,
+                         nodeSize, 0)
+        #print (rawResult)
+        destroyLeadingZero(rawResult)
+        #print (rawResult)
+        return (recToString(rawResult,len(rawResult),0))
+
+    elif (expression[0] == 'm'):
+        print ("Multiplication")
+
+def findFirstClosingParethesis(line, index):
+    if (line[index] == ')'):
+        return index
+    else:
+        return (findFirstClosingParethesis(line, index+1))
+
+def findBeginningOfExpression(line, index):
+    if (line[index] == 'a' or line[index] == 'm'):
+        return index
+    else:
+        return (findBeginningOfExpression(line, index-1))
+
+def grabExpression (line, initialIndex, finalIndex):
+    return line[initialIndex:finalIndex+1]
+
+def analizeLine(line, nodeSize):
+    if( ')' not in line):
+        return line
+    else:
+        grabExpression(line, findBeginningOfExpression(line, findFirstClosingParethesis(line,0)), findFirstClosingParethesis(line,0))
+        analizeSingleExpression(grabExpression(line, findBeginningOfExpression(line, findFirstClosingParethesis(line,0)), findFirstClosingParethesis(line,0)),nodeSize)
+        left = line[:findBeginningOfExpression(line, findFirstClosingParethesis(line,0))]
+        middle = line[findBeginningOfExpression(line, findFirstClosingParethesis(line,0)):findFirstClosingParethesis(line, 0) + 1]
+        right = line[findFirstClosingParethesis(line, 0) + 1:]
+        replacedLine = left \
+                       + analizeSingleExpression(grabExpression(line, findBeginningOfExpression(line, findFirstClosingParethesis(line,0)), findFirstClosingParethesis(line,0)),nodeSize) \
+                       + right
+        #print(replacedLine)
+        return (analizeLine(replacedLine, nodeSize))
+
+def analizeAndPrint(linesList, index, nodeSize):
+    if (index == len(linesList)):
+        return 0
+    else:
+        print (linesList[index].strip('\n') + "=" + analizeLine(linesList[index],nodeSize).strip('\n'))
+        return (analizeAndPrint(linesList,index+1, nodeSize))
+
+#######################################################
+#
+# main
+#
+#######################################################
+
+nodeSize=2
+f=open("/Users/guillermo/PycharmProjects/HW3/test.txt","r")
+lines = f.readlines()
+analizeAndPrint(lines,0,nodeSize)
+f.close()
