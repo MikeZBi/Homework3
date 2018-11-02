@@ -268,8 +268,8 @@ def toMultiply(listA, listB, listC, whichNodeA, whichNodeB, indexA, indexB, inde
         carryOverAdd = (toAdd + toInsert + carryOverAdd) // 10
         # print("carryOverAdd: ", carryOverAdd)
 
-        whichNodeA -= 1
-        indexA = len(listA[whichNodeA]) - 1
+        #whichNodeA -= 1
+        #indexA = len(listA[whichNodeA]) - 1
         # if(whichNodeA == -1 and indexA == 1 and carryOver != 0):
         #     print("elif2 if")
         #     listC.insert(indexC, carryOver)
@@ -279,7 +279,7 @@ def toMultiply(listA, listB, listC, whichNodeA, whichNodeB, indexA, indexB, inde
         # print("which NodeA:", whichNodeA, "which indexA: ", indexA, " number mult: ", listA[whichNodeA][indexA])
         # print("which NodeB:", whichNodeB, "which indexB: ", indexB, " n mult: ", listB[whichNodeB][indexB])
         #print(listC)
-        return toMultiply(listA, listB, combinedList, whichNodeA, whichNodeB, indexA, indexB, indexC - 1, carryOver, carryOverAdd, n)
+        return toMultiply(listA, listB, combinedList, whichNodeA-1, whichNodeB, len(listA[whichNodeA]) - 1, indexB, indexC - 1, carryOver, carryOverAdd, n)
 
 
     # loop through index in listB; this happens when we are on the last index of the last node in listA
@@ -313,25 +313,25 @@ def toMultiply(listA, listB, listC, whichNodeA, whichNodeB, indexA, indexB, inde
 
         finalCombinedList = carryOverLeft+ carryOverMiddle + carryOverRight
         # Need to reset the carryOver and carryOverAdd back to 0
-        carryOver = 0
-        carryOverAdd = 0
+        #carryOver = 0
+        #carryOverAdd = 0
         # reset node back to the furthest left element
-        whichNodeA = len(listA) - 1
+        #whichNodeA = len(listA) - 1
         # reset the indexA to the size of the next node value
-        indexA = len(listA[whichNodeA]) - 1
+        #indexA = len(listA[whichNodeA]) - 1
         # move the index of B left one
-        indexB = indexB - 1
+        #indexB = indexB - 1
         # to move where we are adding by left 1 index each time we traverse an index of B
-        indexC = len(listC) - (n + 1)
+        #indexC = len(listC) - (n + 1)
         # change the value of n so that we subtract a larger n
-        n += 1
+        #n += 1
         # print("A entire multiplication has finished, reseting whichNodeA back to right most node:", whichNodeA)
 
         # print("indexA:", indexA)
         # print("whichNodeA", whichNodeA)
         # print(listC)
         #print(listC)
-        return toMultiply(listA, listB, finalCombinedList, whichNodeA, whichNodeB, indexA, indexB, indexC, carryOver, carryOverAdd, n)
+        return toMultiply(listA, listB, finalCombinedList, len(listA) - 1, whichNodeB, len(listA[whichNodeA]) - 1, indexB-1, len(listC) - (n + 1), 0, 0, n+1)
 
 
     # finally need to be able to change the node in B
@@ -369,24 +369,24 @@ def toMultiply(listA, listB, listC, whichNodeA, whichNodeB, indexA, indexB, inde
 
 
 
-        carryOverAdd = 0
-        carryOver = 0
+        #carryOverAdd = 0
+        #carryOver = 0
 
         # finished a lsitA multiply, so reset back to last node and right most element in that node
-        whichNodeA = len(listA) - 1
-        indexA = len(listA[whichNodeA]) - 1
+        #whichNodeA = len(listA) - 1
+        #indexA = len(listA[whichNodeA]) - 1
 
         # change the node for B
-        whichNodeB -= 1
+        #whichNodeB -= 1
         # change the index to the right most index of that list
-        indexB = len(listB[whichNodeB]) - 1
+        #indexB = len(listB[whichNodeB]) - 1
 
         # need to reset where the indexC, as we have finished a multiply and need to start a new line, the index must start one left since we have to add a 0 in signifigance
-        indexC = len(listC) - (n + 1)
-        n += 1
+        #indexC = len(listC) - (n + 1)
+        #n += 1
         # print("here is listC: ", listC)
         #print(listC)
-        return toMultiply(listA, listB, finalCombinedList, whichNodeA, whichNodeB, indexA, indexB, indexC, carryOver, carryOverAdd, n)
+        return toMultiply(listA, listB, finalCombinedList, len(listA) - 1, whichNodeB-1, len(listA[whichNodeA]) - 1, len(listB[whichNodeB]) - 1, len(listC) - (n + 1), 0, 0, n+1)
 
 def destroyLeadingZero(listA):
     if (listA[0] != 0) or (len(listA) == 1):
