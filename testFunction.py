@@ -235,7 +235,7 @@ def toMultiply(listA, listB, listC, whichNodeA, whichNodeB, indexA, indexB, inde
         carryOverAdd = (toAdd + toInsert + carryOverAdd) // 10
         # print("carryOverAdd: ", carryOverAdd)
         # print("numbers in listC: ", listC)
-        print(listC)
+        #print(listC)
         return toMultiply(listA, listB, combinedList, whichNodeA, whichNodeB, indexA - 1, indexB, indexC - 1, carryOver, carryOverAdd,
                    n)
 
@@ -278,7 +278,7 @@ def toMultiply(listA, listB, listC, whichNodeA, whichNodeB, indexA, indexB, inde
         # print("numbers in listC", listC)
         # print("which NodeA:", whichNodeA, "which indexA: ", indexA, " number mult: ", listA[whichNodeA][indexA])
         # print("which NodeB:", whichNodeB, "which indexB: ", indexB, " n mult: ", listB[whichNodeB][indexB])
-        print(listC)
+        #print(listC)
         return toMultiply(listA, listB, combinedList, whichNodeA, whichNodeB, indexA, indexB, indexC - 1, carryOver, carryOverAdd, n)
 
 
@@ -330,7 +330,7 @@ def toMultiply(listA, listB, listC, whichNodeA, whichNodeB, indexA, indexB, inde
         # print("indexA:", indexA)
         # print("whichNodeA", whichNodeA)
         # print(listC)
-        print(listC)
+        #print(listC)
         return toMultiply(listA, listB, finalCombinedList, whichNodeA, whichNodeB, indexA, indexB, indexC, carryOver, carryOverAdd, n)
 
 
@@ -385,10 +385,16 @@ def toMultiply(listA, listB, listC, whichNodeA, whichNodeB, indexA, indexB, inde
         indexC = len(listC) - (n + 1)
         n += 1
         # print("here is listC: ", listC)
-        print(listC)
+        #print(listC)
         return toMultiply(listA, listB, finalCombinedList, whichNodeA, whichNodeB, indexA, indexB, indexC, carryOver, carryOverAdd, n)
 
-
+def destroyLeadingZero(listA):
+    if (listA[0] != 0) or (len(listA) == 1):
+        return listA
+    else:
+        #del listA[0]
+        rightList = listA[1:]
+        return destroyLeadingZero(rightList)
         
         
 
